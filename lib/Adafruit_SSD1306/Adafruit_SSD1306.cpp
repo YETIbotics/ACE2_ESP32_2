@@ -134,8 +134,8 @@ void Adafruit_SSD1306::drawPixel(int16_t x, int16_t y, uint16_t color) {
   // x is which column
     switch (color)
     {
-      case WHITE:   buffer[x+ (y/8)*SSD1306_LCDWIDTH] |=  (1 << (y&7)); break;
-      case BLACK:   buffer[x+ (y/8)*SSD1306_LCDWIDTH] &= ~(1 << (y&7)); break;
+      case WHITE2:   buffer[x+ (y/8)*SSD1306_LCDWIDTH] |=  (1 << (y&7)); break;
+      case BLACK2:   buffer[x+ (y/8)*SSD1306_LCDWIDTH] &= ~(1 << (y&7)); break;
       case INVERSE: buffer[x+ (y/8)*SSD1306_LCDWIDTH] ^=  (1 << (y&7)); break;
     }
 
@@ -574,8 +574,8 @@ void Adafruit_SSD1306::drawFastHLineInternal(int16_t x, int16_t y, int16_t w, ui
 
   switch (color)
   {
-  case WHITE:         while(w--) { *pBuf++ |= mask; }; break;
-    case BLACK: mask = ~mask;   while(w--) { *pBuf++ &= mask; }; break;
+  case WHITE2:         while(w--) { *pBuf++ |= mask; }; break;
+    case BLACK2: mask = ~mask;   while(w--) { *pBuf++ &= mask; }; break;
   case INVERSE:         while(w--) { *pBuf++ ^= mask; }; break;
   }
 }
@@ -667,8 +667,8 @@ void Adafruit_SSD1306::drawFastVLineInternal(int16_t x, int16_t __y, int16_t __h
 
   switch (color)
     {
-    case WHITE:   *pBuf |=  mask;  break;
-    case BLACK:   *pBuf &= ~mask;  break;
+    case WHITE2:   *pBuf |=  mask;  break;
+    case BLACK2:   *pBuf &= ~mask;  break;
     case INVERSE: *pBuf ^=  mask;  break;
     }
 
@@ -696,7 +696,7 @@ void Adafruit_SSD1306::drawFastVLineInternal(int16_t x, int16_t __y, int16_t __h
       }
     else {
       // store a local value to work with
-      register uint8_t val = (color == WHITE) ? 255 : 0;
+      register uint8_t val = (color == WHITE2) ? 255 : 0;
 
       do  {
         // write our value in
@@ -721,8 +721,8 @@ void Adafruit_SSD1306::drawFastVLineInternal(int16_t x, int16_t __y, int16_t __h
     register uint8_t mask = postmask[mod];
     switch (color)
     {
-      case WHITE:   *pBuf |=  mask;  break;
-      case BLACK:   *pBuf &= ~mask;  break;
+      case WHITE2:   *pBuf |=  mask;  break;
+      case BLACK2:   *pBuf &= ~mask;  break;
       case INVERSE: *pBuf ^=  mask;  break;
     }
   }
