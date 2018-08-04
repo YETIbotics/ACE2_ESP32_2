@@ -16,8 +16,10 @@
 #include <SPI.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
+#include <Adafruit_PWMServoDriver.h>
 
 #include <Robot.h>
+#include <RC_ESC.h>
 
 const unsigned char PROGMEM YETIBOTICS[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -96,6 +98,9 @@ MPU6050 mpu;
 int16_t ax, ay, az;
 int16_t gx, gy, gz;
 
+Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
+RC_ESC Lift(2, &pwm, true);
+
 int8_t temp = 0;
 
 void SetupTasks();
@@ -126,6 +131,8 @@ void setup(void)
 
     // delay(1000);
 
+
+
     display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
     display.clearDisplay();
     display.drawBitmap(128, 32, YETIBOTICS, 128, 32, 1);
@@ -133,6 +140,31 @@ void setup(void)
 
     display.setTextSize(1);
     display.setTextColor(WHITE2);
+
+    float freq = 500;
+         pwm.begin();
+  pwm.setPWMFreq(freq);  // This is the maximum PWM frequency
+   pwm.setPWM(0, 0, 0 / 2 );
+        pwm.setPWM(1, 0, 0 / 2 ); //4096
+   
+    float startpules = 1391.6 / ( 1000000 / freq / 4096);
+    
+            pwm.setPWM(2, 0, startpules ); //342
+
+            // for(int i = 0; i < 4096; i++)
+            // {
+            //     pwm.setPWM(0, 0, i );
+
+            //     display.clearDisplay();
+            //      display.setCursor(0, 0);
+            //         display.print(i);
+            //       display.display();
+
+            //       i+=200;
+
+            //     delay(500);
+            // }
+
 
     pinMode(25, OUTPUT);
     digitalWrite(25, LOW);
@@ -376,12 +408,12 @@ void WIRELoop(void *parameter)
             mpu.dmpGetQuaternion(&q, fifoBuffer);
             mpu.dmpGetGravity(&gravity, &q);
             mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
-            Serial.print("ypr\t");
-            Serial.print(ypr[0] * 180 / M_PI);
-            Serial.print("\t");
-            Serial.print(ypr[1] * 180 / M_PI);
-            Serial.print("\t");
-            Serial.println(ypr[2] * 180 / M_PI);
+            //Serial.print("ypr\t");
+           // Serial.print(ypr[0] * 180 / M_PI);
+           // Serial.print("\t");
+            //Serial.print(ypr[1] * 180 / M_PI);
+            //Serial.print("\t");
+            //Serial.println(ypr[2] * 180 / M_PI);
         }
 
         
@@ -404,7 +436,13 @@ void WIRELoop(void *parameter)
         display.print("USB: ");
         display.println(Robot.State.USBState);
 
+        display.print("Lift: ");
+        display.println(Robot.State.LiftSpeed);
+
         display.display();
+
+        Lift.SetMotorSpeed(Robot.State.LiftSpeed);
+       
 
         delay(1);
     }

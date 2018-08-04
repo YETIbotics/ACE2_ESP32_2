@@ -1,7 +1,7 @@
 #include "LIFT.h"
 #include "ROBOT.h"
 
-LIFT::LIFT(ROBOT &refRobot) : Robot(refRobot), LiftEnc(Robot._LiftEnc0, Robot._LiftEnc1), Lift(0, Robot._LiftPWM, true)
+LIFT::LIFT(ROBOT &refRobot) : Robot(refRobot), LiftEnc(Robot._LiftEnc0, Robot._LiftEnc1)//, Lift(2, &Robot.pwm, true) // Lift(0, Robot._LiftPWM, true)
 {
 }
 
@@ -17,7 +17,7 @@ void LIFT::Loop()
             //Go up
             while(_SetPoint > liftPos())
             {
-                Lift.SetMotorSpeed(150);
+                //Lift.SetMotorSpeed(150);
 
                 delay(20);
             }
@@ -27,7 +27,7 @@ void LIFT::Loop()
             //go down
             while(_SetPoint < liftPos())
             {
-                Lift.SetMotorSpeed(-150);
+                //Lift.SetMotorSpeed(-150);
 
                 delay(20);
             }
@@ -46,7 +46,7 @@ void LIFT::Loop()
         }
     }
 
-    Lift.SetMotorSpeed(Robot.State.LiftSpeed * .75);
+    //Lift.SetMotorSpeed(Robot.State.LiftSpeed * .75);
 
 
 }

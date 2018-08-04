@@ -7,8 +7,10 @@ ROBOT::ROBOT() : Btd(&Usb), PS4(&Btd), Drive(*this), Controller(*this), Lift(*th
 
 void ROBOT::Setup()
 {
-	
+
 	Usb.Init();
+
+	
 
 	lastStateUpdate = millis();
 }

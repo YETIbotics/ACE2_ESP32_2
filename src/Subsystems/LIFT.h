@@ -1,7 +1,7 @@
 #pragma once
 
 #include<Autonomous/AutoTask.h>
-#include <RC_ESC.h>
+//#include <RC_ESC.h>
 #include <Encoder.h>
 
 class ROBOT;
@@ -17,7 +17,7 @@ public:
     AutoTask& ToAsync(int distance);
 
 	Encoder LiftEnc;
-	RC_ESC Lift;
+	//RC_ESC Lift;
 
 	int32_t liftMin = 0;
 
