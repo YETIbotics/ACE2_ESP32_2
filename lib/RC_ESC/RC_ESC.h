@@ -14,7 +14,6 @@ private:
 	Adafruit_PWMServoDriver *pwm;
 
 	bool _isPWMBoard = false;
-	float _frequency = 500;
 
 	int _pinPWM;
 	bool _reverse;

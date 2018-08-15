@@ -13,9 +13,7 @@ RC_ESC::RC_ESC(int channel, Adafruit_PWMServoDriver *Refpwm, bool reversed)
 	_reverse = reversed;
 	_channel = channel;
 
-	float startpules = 1391.6 / (1000000 / _frequency / 4096);
-
-	pwm->setPWM(channel, 0, startpules); //342
+	pwm->setPWM(channel, 0, 1565); //342
 }
 
 //https://hackaday.com/2016/10/31/whats-new-esp-32-testing-the-arduino-esp32-library/
@@ -45,7 +43,7 @@ void RC_ESC::SetMotorSpeed(float speed)
 	{
 		if (_isPWMBoard)
 		{
-			float startpules = map(speed, 0, 255, 1391.6, 2000) / ( 1000000 / _frequency / 4096);
+			float startpules = map(speed, 0, 255, 2820, 4075) ;
     
     		pwm->setPWM(_channel, 0, startpules ); //342
 		}
@@ -57,10 +55,10 @@ void RC_ESC::SetMotorSpeed(float speed)
 	{
 		if (_isPWMBoard)
 		{
-			float startpules = map(speed, -255, 0, 1000, 1391.6) / ( 1000000 / _frequency / 4096);
+			float startpules = map(speed, -255, 0, 1565, 2820);
     
     		pwm->setPWM(_channel, 0, startpules ); //342
-			Serial.println(_frequency);
+			//Serial.println(_frequency);
 		}
 		else
 			ledcWrite(_channel, map(speed, -255, 0, 3283, 4924));

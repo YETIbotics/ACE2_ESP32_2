@@ -17,6 +17,7 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 #include <Adafruit_PWMServoDriver.h>
+#include <Adafruit_MCP23017.h>
 
 #include <Robot.h>
 #include <RC_ESC.h>
@@ -99,7 +100,8 @@ int16_t ax, ay, az;
 int16_t gx, gy, gz;
 
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
-RC_ESC Lift(2, &pwm, true);
+Adafruit_MCP23017 mcp;
+RC_ESC Lift(0, &pwm, true);
 
 int8_t temp = 0;
 
@@ -131,8 +133,6 @@ void setup(void)
 
     // delay(1000);
 
-
-
     display.begin(SSD1306_SWITCHCAPVCC, 0x3C);
     display.clearDisplay();
     display.drawBitmap(128, 32, YETIBOTICS, 128, 32, 1);
@@ -141,30 +141,74 @@ void setup(void)
     display.setTextSize(1);
     display.setTextColor(WHITE2);
 
-    float freq = 500;
-         pwm.begin();
-  pwm.setPWMFreq(freq);  // This is the maximum PWM frequency
-   pwm.setPWM(0, 0, 0 / 2 );
-        pwm.setPWM(1, 0, 0 / 2 ); //4096
-   
-    float startpules = 1391.6 / ( 1000000 / freq / 4096);
-    
-            pwm.setPWM(2, 0, startpules ); //342
+    mcp.begin();
+    mcp.pinMode(14, OUTPUT);
+    mcp.digitalWrite(14, HIGH);
 
-            // for(int i = 0; i < 4096; i++)
-            // {
-            //     pwm.setPWM(0, 0, i );
+    pwm.begin();
+    pwm.setPWMFreq(500);
+    //pwm.setPWM(0, 0, 0 / 2);
+    //pwm.setPWM(1, 0, 0 / 2); //4096
 
-            //     display.clearDisplay();
-            //      display.setCursor(0, 0);
-            //         display.print(i);
-            //       display.display();
+    //float startpules = 1391.6 / (1000000 / freq / 4096);
 
-            //       i+=200;
+    //pwm.setPWM(2, 0, 2500); //1565 - 4075 :: 2820 neutral
+    //delay(500);
 
-            //     delay(500);
-            // }
+    // while (true)
+    // {
 
+    //     //pwm.setPWMFreq(500);
+
+    //     mcp.digitalWrite(14, HIGH);
+    //     for (int i = 0; i <= 1500; i++)
+    //     {
+    //         pwm.setPWM(0, 0, i);
+
+    //         display.clearDisplay();
+    //         display.setCursor(0, 0);
+    //         display.println(i);
+    //         //display.println(f);
+    //         display.display();
+    //         i += 19;
+    //     }
+    //     for (int i = 1500; i >= 0; i--)
+    //     {
+    //         pwm.setPWM(0, 0, i);
+
+    //         display.clearDisplay();
+    //         display.setCursor(0, 0);
+    //         display.println(i);
+    //         //display.println(f);
+    //         display.display();
+    //         i -= 19;
+    //     }
+    //     mcp.digitalWrite(14, LOW);
+    //     for (int i = 0; i <= 1500; i++)
+    //     {
+    //         pwm.setPWM(0, 0, i);
+
+    //         display.clearDisplay();
+    //         display.setCursor(0, 0);
+    //         display.println(i);
+    //         //display.println(f);
+    //         display.display();
+    //         i += 19;
+    //     }
+    //     for (int i = 1500; i >= 0; i--)
+    //     {
+    //         pwm.setPWM(0, 0, i);
+
+    //         display.clearDisplay();
+    //         display.setCursor(0, 0);
+    //         display.println(i);
+    //         //display.println(f);
+    //         display.display();
+    //         i -= 19;
+    //     }
+
+    //     //f += 99;
+    // }
 
     pinMode(25, OUTPUT);
     digitalWrite(25, LOW);
@@ -372,7 +416,6 @@ void WIRELoop(void *parameter)
         // wait for MPU interrupt or extra packet(s) available
         while (!mpuInterrupt && fifoCount < packetSize)
         {
-           
         }
 
         // reset interrupt flag and get INT_STATUS byte
@@ -409,14 +452,13 @@ void WIRELoop(void *parameter)
             mpu.dmpGetGravity(&gravity, &q);
             mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
             //Serial.print("ypr\t");
-           // Serial.print(ypr[0] * 180 / M_PI);
-           // Serial.print("\t");
+            // Serial.print(ypr[0] * 180 / M_PI);
+            // Serial.print("\t");
             //Serial.print(ypr[1] * 180 / M_PI);
             //Serial.print("\t");
             //Serial.println(ypr[2] * 180 / M_PI);
         }
 
-        
         Robot.State.UpdateHeading(ypr[0] * 180 / M_PI);
         // sensors_event_t event;
         // bno.getEvent(&event);
@@ -442,7 +484,6 @@ void WIRELoop(void *parameter)
         display.display();
 
         Lift.SetMotorSpeed(Robot.State.LiftSpeed);
-       
 
         delay(1);
     }
@@ -501,6 +542,7 @@ void LiftLoop(void *parameter)
     while (true)
     {
         Robot.Lift.Loop();
+        Lift.SetMotorSpeed(Robot.State.LiftSpeed * .75);
         yield();
         delay(20);
     }
@@ -541,7 +583,6 @@ void SetupOTA()
 
     ArduinoOTA
         .onStart([]() {
-
             String type;
             if (ArduinoOTA.getCommand() == U_FLASH)
                 type = "sketch";
