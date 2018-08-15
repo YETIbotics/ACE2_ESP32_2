@@ -1,7 +1,8 @@
 
 #include "ROBOT.h"
 
-ROBOT::ROBOT() : Btd(&Usb), PS4(&Btd), Drive(*this), Controller(*this), Lift(*this), Autonomous(*this)
+//ROBOT::ROBOT() : Btd(&Usb), PS4(&Btd), Drive(*this), Controller(*this), Lift(*this), Autonomous(*this)
+ROBOT::ROBOT() : Xbox(&Usb), Drive(*this), Controller(*this), Lift(*this), Autonomous(*this)
 {
 }
 
@@ -9,8 +10,6 @@ void ROBOT::Setup()
 {
 
 	Usb.Init();
-
-	
 
 	lastStateUpdate = millis();
 }

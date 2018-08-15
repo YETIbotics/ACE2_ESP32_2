@@ -3,8 +3,10 @@
 
 #include <Wire.h>
 
-#include <PS4BT.h>
-#include <usbhub.h>
+//#include <PS4BT.h>
+//#include <usbhub.h>
+#include <XBOXRECV.h>
+
 // #include <utility\imumaths.h>
 
 
@@ -26,8 +28,9 @@ class ROBOT
 
 	//USB and PS4 Items
 	USB Usb;
-	BTD Btd;
-	PS4BT PS4;
+	//BTD Btd;
+	//PS4BT PS4;
+	XBOXRECV Xbox;
 
 
 	//Subsystems
